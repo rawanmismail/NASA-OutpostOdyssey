@@ -267,9 +267,9 @@ All 24 automated tests pass, including five-day mission runs, hazard/ice branche
 
 ## Railway hosting
 
-The existing production deployment is [dune-tech.up.railway.app](https://dune-tech.up.railway.app). The Railway service is configured to build with `npm run build` and run `npm start`. The Node production server serves `dist`, compresses text assets, uses Railway's `PORT` (8080 by default), and exposes `/healthz` for deployment checks. No Vite development server runs in production.
+The existing production deployment is [outpost-odyssey.up.railway.app](https://outpost-odyssey.up.railway.app). The Railway service is configured to build with `npm run build` and run `npm start`. The Node production server serves `dist`, compresses text assets, uses Railway's `PORT` (8080 by default), and exposes `/healthz` for deployment checks. No Vite development server runs in production.
 
-Deploy this directory to the existing **dune tech** project / **dune tech** service / **production** environment with the Railway CLI. Keep the current service and domain when replacing the game. `.railwayignore` excludes dependencies, generated builds, local screenshots and Markdown files other than this README. Tests run with `npm test`.
+Deploy this directory to the existing **outpost-odyssey** project / **dune tech** service / **production** environment with the Railway CLI. Keep the current service and domain when replacing the game. `.railwayignore` excludes dependencies, generated builds, local screenshots and Markdown files other than this README. Tests run with `npm test`.
 
 
 ## CSA learning resources
