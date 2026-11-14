@@ -1,5 +1,5 @@
 import LANG from './translations.js';
-import {fetchFlareRecord} from './nasa.js';
+import {fetchGameFlare} from './nasaClient.js';
 let LG='en';
 try { LG=localStorage.getItem('odyssey_react_lang')||'en'; } catch {}
 if(!LANG[LG]) LG='en';
@@ -15,7 +15,6 @@ const tx=t,lz=(p,v)=>()=>t(p,v),val=x=>typeof x==='function'?x():x;
 const joinList=a=>(LANG[LG].list||LANG.en.list)(a);
 const resName=k=>t('res.'+k);
 const realData=text=>text,gameEst=text=>text;
-const NASA_API_KEY='DEMO_KEY';
 export const MAPS={elev:'assets/elevation-map.jpg',slope:'assets/slope-map.jpg'};
 function updateHUD() {}
 const TERM_KEYS=['regolith','radiation','flare','psr','slope','elevation','scrubber','lola','donki','rim'];
@@ -94,7 +93,7 @@ const ARCHIVE = [
   { cls: 'X8.7', date: '2024-05-14', ar: '3664', li: 1 },
 ];
 const flareSev = c => c[0] === 'X' ? (parseFloat(c.slice(1)) >= 5 ? 4 : 3) : c[0] === 'M' ? 2 : 1;
-// The live DONKI result is reused for 6 hours (memory + localStorage), so replays don't call NASA again and the DEMO_KEY rate limit lasts.
+// Reuse live data in memory and restore browser-stored results for up to 6 hours.
 const FLARE_TTL = 6 * 3600e3;
 let flareCache = null;
 const pickArchive = () => { const a = ARCHIVE[Math.floor(Math.random() * ARCHIVE.length)]; return { ...a, live: false, sev: flareSev(a.cls) }; };
@@ -109,7 +108,7 @@ async function loadFlare() {
   if (!g.flareUsed) g.flare = { ...f, sev: flareSev(f.cls) };
 }
 async function fetchFlare() {
-  const f = await fetchFlareRecord(NASA_API_KEY);
+  const f = await fetchGameFlare();
   if (f) { try { localStorage.setItem('oo_flare', JSON.stringify({ t: Date.now(), f })); } catch (e) { } }
   return f;
 }

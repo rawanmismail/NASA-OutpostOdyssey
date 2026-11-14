@@ -5,10 +5,11 @@ import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createGzip} from 'node:zlib';
 import {pipeline} from 'node:stream';
+import {createNasaFlareService} from './server/nasaService.mjs';
 
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.txt':'text/plain; charset=utf-8','.woff2':'font/woff2'};
 
-export function createGameServer(root=fileURLToPath(new URL('./dist/',import.meta.url))){
+export function createGameServer(root=fileURLToPath(new URL('./dist/',import.meta.url)),{nasaFlare=createNasaFlareService()}={}){
  root=resolve(root);
  return createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');
@@ -16,6 +17,10 @@ export function createGameServer(root=fileURLToPath(new URL('./dist/',import.met
   try{
    const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
    if(path==='/healthz'){res.writeHead(200,{'Content-Type':'text/plain','Cache-Control':'no-store'});res.end(req.method==='HEAD'?undefined:'ok');return;}
+   if(path==='/api/nasa/flare'){
+    const record=await nasaFlare();res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Access-Control-Allow-Origin':'*','Cache-Control':record?'public, max-age=300':'public, max-age=60'});
+    res.end(req.method==='HEAD'?undefined:JSON.stringify({record}));return;
+   }
    const file=resolve(root,'.'+(path==='/'?'/index.html':path));
    if(!file.startsWith(root+sep)||path.includes('\0')||path.split(/[\\/]/).some(part=>part.startsWith('.'))){res.writeHead(404);res.end();return;}
    let info;try{info=await stat(file);}catch{res.writeHead(404);res.end();return;}
@@ -33,6 +38,7 @@ export function createGameServer(root=fileURLToPath(new URL('./dist/',import.met
 }
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ try{process.loadEnvFile(fileURLToPath(new URL('./.env.local',import.meta.url)));}catch(error){if(error.code!=='ENOENT')throw error;}
  const port=Number(process.env.PORT||8080),server=createGameServer();
  server.listen(port,'0.0.0.0',()=>console.log(`Surface Crew listening on port ${port}`));
  for(const signal of['SIGTERM','SIGINT'])process.on(signal,()=>server.close(()=>process.exit(0)));
