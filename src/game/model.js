@@ -1,4 +1,5 @@
 import LANG from './translations.js';
+import {fetchFlareRecord} from './nasa.js';
 let LG='en';
 try { LG=localStorage.getItem('odyssey_react_lang')||'en'; } catch {}
 if(!LANG[LG]) LG='en';
@@ -92,8 +93,6 @@ const ARCHIVE = [
   { cls: 'X9.0', date: '2024-10-03', ar: '3842', li: 0 },
   { cls: 'X8.7', date: '2024-05-14', ar: '3664', li: 1 },
 ];
-const letterRank = { A: 0, B: 1, C: 2, M: 3, X: 4 };
-const rankCls = c => (letterRank[c[0]] ?? 0) * 100 + (parseFloat(c.slice(1)) || 0);
 const flareSev = c => c[0] === 'X' ? (parseFloat(c.slice(1)) >= 5 ? 4 : 3) : c[0] === 'M' ? 2 : 1;
 // The live DONKI result is reused for 6 hours (memory + localStorage), so replays don't call NASA again and the DEMO_KEY rate limit lasts.
 const FLARE_TTL = 6 * 3600e3;
@@ -110,20 +109,7 @@ async function loadFlare() {
   if (!g.flareUsed) g.flare = { ...f, sev: flareSev(f.cls) };
 }
 async function fetchFlare() {
-  let f = null;
-  try {
-    const iso = d => d.toISOString().slice(0, 10);
-    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 5000);
-    const r = await fetch(`https://api.nasa.gov/DONKI/FLR?startDate=${iso(new Date(Date.now() - 150 * 864e5))}&endDate=${iso(new Date())}&api_key=${encodeURIComponent(NASA_API_KEY)}`, { signal: ctl.signal });
-    clearTimeout(to);
-    if (r.ok) {
-      const j = await r.json();
-      if (Array.isArray(j) && j.length) {
-        const top = j.filter(x => x.classType).sort((a, b) => rankCls(b.classType) - rankCls(a.classType))[0];
-        if (top) f = { cls: top.classType, date: (top.peakTime || top.beginTime || '').slice(0, 10), ar: top.activeRegionNum || '—', live: true, link: top.link };
-      }
-    }
-  } catch (e) { /* offline or blocked: the archived record is used */ }
+  const f = await fetchFlareRecord(NASA_API_KEY);
   if (f) { try { localStorage.setItem('oo_flare', JSON.stringify({ t: Date.now(), f })); } catch (e) { } }
   return f;
 }

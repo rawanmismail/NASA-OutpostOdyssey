@@ -262,7 +262,7 @@ All meter values, costs, credits and event damage in the game are simplified gam
 
 OpenAI Codex assisted with the React migration, procedural models/materials, world consoles, camera, touch controls, local audio, translations and automated checks. The original mission balance and science sources were retained, with caveats distinguishing estimates from measurements. New and inherited Arabic text needs native-speaker review.
 
-All 24 automated tests pass, including five-day mission runs, hazard/ice branches, saves, audio fallbacks, bilingual React rendering, camera-relative left/right movement, and preservation of animated geometry after batching. Production builds succeed. Browser QA covered equipment interaction and phone portrait/landscape layouts. Physical phone performance and audible speaker output have not been verified on hardware.
+All 32 automated tests pass, including five-day mission runs, hazard/ice branches, saves, audio fallbacks, bilingual React rendering, camera-relative left/right movement, and preservation of animated geometry after batching. Production builds succeed. Browser QA covered equipment interaction and phone portrait/landscape layouts. Physical phone performance and audible speaker output have not been verified on hardware.
 
 
 ## Railway hosting
@@ -281,4 +281,13 @@ Open **Science > Learning lab** from the menu or the field tools to find:
 
 The greenhouse equipment console and equipment-selection step also include an optional **Why grow food in space?** guide. Resource descriptions and crew discussion prompts are available in English and Arabic. The CSA pages open in a new tab and offer English/French content. Reading in the console pauses the mission; these resources do not change the mission balance or award points. Descriptions and reflection prompts are original game text; the linked material remains on the CSA website.
 
-Validation: all 24 automated tests pass, including bilingual resource links, collapsed greenhouse guidance, mission-state preservation, and the existing mission, controls, rendering, audio and production-server checks.
+Validation: all 32 automated tests pass, including bilingual resource links, collapsed greenhouse guidance, mission-state preservation, and the existing mission, controls, rendering, audio and production-server checks.
+
+
+## NASA API key fallback
+
+When a fresh DONKI request is needed, the game tries the configured `NASA_API_KEY` in `src/game/model.js`. If that request is rejected, rate-limited, times out, or returns an unreadable response, it retries once with `DEMO_KEY`. If both attempts fail, the mission keeps its built-in archived flare record and labels it Archived. A successful DEMO_KEY result is still real NASA data and uses the existing Live label.
+
+A working configured key never uses the demo quota. Configuring `DEMO_KEY` directly (or leaving the key blank) makes only one attempt. Each attempt has a five-second timeout. A valid empty NASA response uses the archive without retrying the same query with another key. Existing in-memory and six-hour browser-storage caches are checked before requesting fresh data; previously saved mission records remain unchanged.
+
+Rebuild and redeploy after editing the key. A key in browser JavaScript is publicly visible in the built files. The fallback does not make it private.
