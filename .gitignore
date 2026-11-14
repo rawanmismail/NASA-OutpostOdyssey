@@ -1,0 +1,7 @@
+node_modules/
+dist/
+qa/
+.sites-runtime/
+*.log
+*.[mM][dD]
+!/README.md
