@@ -2,6 +2,11 @@ import React,{useState,useEffect} from 'react';
 import {model,t,EV,REF,TERM_KEYS,CREW,MAPS,SITES} from '../game/model.js';
 import {r} from '../game/copy.js';
 import {Button,Choice,Effects,Icon,Source,Tag} from './UI.jsx';
+import {LearningLab,learningText} from './LearningLab.jsx';
+export function SciencePanel(){
+ const [section,setSection]=useState('guide'),text=learningText();
+ return <><nav className="tabs science-sections" aria-label={text.navigation}>{[['guide',text.guide],['lab',text.lab]].map(([id,label])=><Button key={id} primary={section===id} aria-pressed={section===id} onClick={()=>setSection(id)}>{label}</Button>)}</nav>{section==='lab'?<LearningLab/>:<FieldGuide/>}</>;
+}
 export const stationName=id=>id==='lab'?t('x.lab'):id==='survey'?r('scan'):id==='portable'?r('portable'):t('scene.'+id);
 export const asset=path=>import.meta.env.BASE_URL+path;
 const factRefs={power:['shadow'],rad:['change4'],dust:['base','regolith'],micro:['weather'],freeze:['base'],ice:['shack','lcross'],life:['massBal']};

@@ -3,6 +3,7 @@ import {model,t,Mission,EVENT_AT,JOBS,ROUTES,OFF,CREW,K,val} from '../game/model
 import {r} from '../game/copy.js';
 import {Button,Choice,Effects,Icon,Tag,Source} from './UI.jsx';
 import {ScienceFact,Report,stationName} from './Panels.jsx';
+import {GreenhouseLearning} from './LearningLab.jsx';
 
 function Event({actions}){
  const s=model.state,ev=Mission.current();if(!ev)return null;
@@ -16,7 +17,7 @@ function Emergency({actions}){const [keys,setKeys]=useState([]),s=model.state,to
 function Jobs({id,actions}){return <><h2>{r('jobs')}</h2><p className="intro">{t('x.jobSub')}</p><div className="choices">{Object.entries(JOBS).filter(([k])=>k!=='gh'||model.state.build.green).map(([k,job])=><Choice key={k} title={t('plan.opts.'+k+'.0')} description={stationName(job.at)+' · '+t('plan.opts.'+k+'.1')} fx={job.fx} disabled={!Mission.afford(job.fx)} onClick={()=>job.at===id?actions.job(k):actions.jobTarget(k)}><span className="station-callout"><Icon name={job.at===id?'tool':'walk'} size={17}/>{job.at===id?r('doJob'):r('navigate',{name:stationName(job.at)})}</span></Choice>)}</div></>;}
 function Night({actions}){const s=model.state,n=s.night;if(!n)return null;const names=CREW.slice(s.health,n.healthBefore).map(k=>t('crew.'+k+'.name'));return <><Tag>{r('day',{n:s.turn})}</Tag><h2>{t('x.nightTitle')}</h2><p className="intro">{t('x.nightHint')}</p><div className="forecast-list"><div><span>{t('daily.panels')}</span><b className="positive">+{n.gen}</b></div><div><span>{t('night.machines')}</span><b className="negative">−{n.use}</b></div>{['life','prot'].map(k=><div key={k}><span>{t('res.'+k)}</span><b className="negative">{n.after[k]-n.before[k]}</b></div>)}</div><p>{r('healthy',{n:s.health})}</p>{n.slow&&<p className="warning-note">{t('night.note',{n:'−6'})}</p>}{names.length>0&&<p className="warning-note">{r('crewInjury',{names:names.join(', ')})}</p>}{s.health>n.healthBefore&&<p className="positive">{r('crewRecovery',{name:t(`crew.${CREW[n.healthBefore]}.name`)})}</p>}<Button primary onClick={s.turn>=5||s.health<=0?actions.debrief:actions.nextDay}>{s.turn>=5||s.health<=0?r('missionReport'):t('night.next',{n:s.turn+1})}<Icon name="arrow"/></Button></>;}
 function description(id){const s=model.state,b=s.build,f=model.forecast();if(id==='hab')return t('obj.habText',{heat:f.heat,mm:K.hab.mm[b.hab]});if(id==='pow')return t('obj.powText',{site:t('sites.'+s.site+'.name'),spot:'',gen:f.gen,boost:f.boost?t('obj.powBoost'):'',dust:s.flags.dustPanels?t('obj.powDust'):''});if(id==='life')return t('obj.lifeText',{drain:f.lifeDrain,ls:f.ls});if(id==='shelter')return t('obj.shelterText',{desc:t(`tiers.shelter.opts.${b.shelter-1}.1`),pct:Math.round(Math.min(.8,K.shelter.mit[b.shelter]+(s.flags.shieldBonus?.3:0))*100),soil:s.flags.shieldBonus?t('obj.shelterSoil'):''});if(id==='green')return t('obj.greenText');if(id==='rover')return t(b.rover?'obj.ruggedText':'obj.basicText')+t('obj.roverText');return t('plan.opts.sci.1');}
-export function Station({id,actions}){
+function StationContent({id,actions}){
  const s=model.state,phase=s.phase,event=s.events[s.turn],currentAt=EVENT_AT[event];
  if(phase==='debrief')return <Report onRestart={actions.start}/>;
  if(phase==='emergency'&&id==='lab')return <Emergency actions={actions}/>;
@@ -29,3 +30,4 @@ export function Station({id,actions}){
  if(phase==='night'&&id==='hab')return <Night actions={actions}/>;
  return <><Tag>{r('equipment')}</Tag><h2>{stationName(id)}</h2><p className="intro">{description(id)}</p>{phase==='nightReady'&&id==='hab'?<><p>{t('x.nightSub')}</p><Button primary onClick={actions.endDay}><Icon name="home"/>{r('finishDay')}</Button></>:<Button primary onClick={()=>actions.inspect(id)}><Icon name="tool"/>{r('stationAction',{name:stationName(id)})}</Button>}{id==='life'&&<details><summary>{t('x.supplies')}</summary><p>{t('x.lifeDetail')}</p><ScienceFact id="life"/></details>}<p className="note">{t('x.units')}</p></>;
 }
+export function Station(props){return <><StationContent {...props}/>{props.id==='green'&&model.state.phase!=='debrief'&&<GreenhouseLearning/>}</>;}

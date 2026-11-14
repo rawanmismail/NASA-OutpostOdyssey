@@ -25,3 +25,25 @@ test('React renders station states, setup, maps and field panels in both languag
   assert.equal(count,70);
  }finally{await server.close();}
 });
+
+test('CSA learning resources are bilingual, optional, and available during greenhouse jobs',async()=>{
+ const memory=new Map();globalThis.localStorage={getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)};
+ const server=await createServer({server:{middlewareMode:true},appType:'custom'});
+ try{
+  const {model}=await server.ssrLoadModule('/src/game/model.js');
+  const {LearningLab,GreenhouseLearning}=await server.ssrLoadModule('/src/components/LearningLab.jsx');
+  const {SciencePanel}=await server.ssrLoadModule('/src/components/Panels.jsx');
+  const {Station}=await server.ssrLoadModule('/src/components/Station.jsx');
+  const {CSA_RESOURCES,LEARNING_COPY}=await server.ssrLoadModule('/src/game/learning.js');
+  const render=(component,props={})=>renderToStaticMarkup(React.createElement(component,props));
+  for(const language of['en','ar']){
+   await model.newMission({weather:false});model.setLanguage(language);model.change(s=>s.phase='job');const before=JSON.stringify(model.state);
+   const lab=render(LearningLab);for(const resource of Object.values(CSA_RESOURCES)){assert.ok(lab.includes(`href="${resource.href}"`));assert.ok(lab.includes(resource[language].title));}
+   assert.equal((lab.match(/rel="noopener noreferrer"/g)||[]).length,2);assert.equal((lab.match(/target="_blank"/g)||[]).length,2);
+   assert.ok(render(SciencePanel).includes(LEARNING_COPY[language].lab));
+   const greenhouse=render(GreenhouseLearning);assert.match(greenhouse,/^<details class="greenhouse-learning"><summary>/);assert.ok(greenhouse.includes(CSA_RESOURCES.food.href));
+   assert.ok(render(Station,{id:'green',actions:{}}).includes(CSA_RESOURCES.food.href));assert.ok(!render(Station,{id:'hab',actions:{}}).includes(CSA_RESOURCES.food.href));
+   assert.equal(JSON.stringify(model.state),before,'reading learning resources leaves mission state unchanged');
+  }
+ }finally{await server.close();}
+});
