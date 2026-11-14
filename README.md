@@ -262,4 +262,11 @@ All meter values, costs, credits and event damage in the game are simplified gam
 
 OpenAI Codex assisted with the React migration, procedural models/materials, world consoles, camera, touch controls, local audio, translations and automated checks. The original mission balance and science sources were retained, with caveats distinguishing estimates from measurements. New and inherited Arabic text needs native-speaker review.
 
-All 22 automated tests pass, including five-day mission runs, hazard/ice branches, saves, audio fallbacks, bilingual React rendering, camera-relative left/right movement, and preservation of animated geometry after batching. Production builds succeed. Browser QA covered equipment interaction and phone portrait/landscape layouts. Physical phone performance and audible speaker output have not been verified on hardware.
+All 23 automated tests pass, including five-day mission runs, hazard/ice branches, saves, audio fallbacks, bilingual React rendering, camera-relative left/right movement, and preservation of animated geometry after batching. Production builds succeed. Browser QA covered equipment interaction and phone portrait/landscape layouts. Physical phone performance and audible speaker output have not been verified on hardware.
+
+
+## Railway hosting
+
+The existing production deployment is [dune-tech.up.railway.app](https://dune-tech.up.railway.app). The Railway service is configured to build with `npm run build` and run `npm start`. The Node production server serves `dist`, compresses text assets, uses Railway's `PORT` (8080 by default), and exposes `/healthz` for deployment checks. No Vite development server runs in production.
+
+Deploy this directory to the existing **dune tech** project / **dune tech** service / **production** environment with the Railway CLI. Keep the current service and domain when replacing the game. `.railwayignore` excludes dependencies, generated builds, local screenshots and Markdown files other than this README. Tests run with `npm test`.

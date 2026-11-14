@@ -1,0 +1,8 @@
+node_modules/
+dist/
+qa/
+.git/
+.sites-runtime/
+*.log
+*.md
+!README.md
