@@ -6,7 +6,7 @@ export function TouchControls({world,canUse,onUse,onGuide,hidden=false}){
  const [stick,setStick]=useState({px:0,py:0}),[sprint,setSprint]=useState(false),pointer=useRef(null),base=useRef(null);
  const release=()=>{pointer.current=null;setStick({px:0,py:0});world?.setMove(0,0);};
  useEffect(()=>{if(hidden){release();setSprint(false);world?.sprint(false);}},[hidden]);
- useEffect(()=>{const visibility=()=>{if(document.hidden)release();};window.addEventListener('blur',release);document.addEventListener('visibilitychange',visibility);return()=>{window.removeEventListener('blur',release);document.removeEventListener('visibilitychange',visibility);world?.setMove(0,0);world?.sprint(false);};},[world]);
+ useEffect(()=>{const stop=()=>{release();setSprint(false);world?.sprint(false);},visibility=()=>{if(document.hidden)stop();};window.addEventListener('blur',stop);document.addEventListener('visibilitychange',visibility);return()=>{window.removeEventListener('blur',stop);document.removeEventListener('visibilitychange',visibility);world?.setMove(0,0);world?.sprint(false);};},[world]);
  if(hidden)return null;
  function down(e){if(pointer.current!==null)return;e.preventDefault();pointer.current=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);move(e);}
  function move(e){if(pointer.current!==e.pointerId)return;e.preventDefault();const rect=base.current.getBoundingClientRect(),v=joystickVector(e.clientX-(rect.left+rect.width/2),e.clientY-(rect.top+rect.height/2),rect.width*.32);setStick(v);world?.setMove(v.x,v.y);}

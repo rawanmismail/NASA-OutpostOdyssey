@@ -6,3 +6,5 @@ qa/
 *.log
 *.md
 !README.md
+
+.env*

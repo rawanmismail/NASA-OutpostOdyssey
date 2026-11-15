@@ -52,14 +52,14 @@ export function attachController(r){
  api.setMove=(x,y)=>{stick={x,y};if(x||y){path=[];autoUse=false;}};
  api.key=(key,down)=>{keys[key.toLowerCase()]=down;if(down){path=[];autoUse=false;}};
  api.sprint=on=>sprinting=on;
- api.resetCamera=()=>{yaw=actor().rotation.y||Math.PI;pitch=.12;};
+ api.resetCamera=()=>{yaw=actor().rotation.y??Math.PI;pitch=.12;};
  api.look=(dx,dy)=>{yaw-=dx*(mobile?.005:.0045);pitch=Math.max(-.28,Math.min(.65,pitch+dy*.0035));};
- api.select=i=>{if(api.roverMode||api.working||!api.crew[i])return;api.active=i;api.stop();yaw=api.crew[i].rotation.y||Math.PI;drawTrail();};
+ api.select=i=>{if(api.roverMode||api.working||!api.crew[i])return;api.active=i;api.stop();yaw=api.crew[i].rotation.y??Math.PI;drawTrail();};
  api.setRover=on=>{
   if(on===api.roverMode)return;api.roverMode=on;api.stop();for(const c of api.crew)c.visible=true;
   if(on)api.crew[api.active].visible=false;
   else{const p=getRover().position;api.crew[api.active].position.set(p.x+2,height(p.x+2,p.z+2),p.z+2);}
-  yaw=actor().rotation.y||Math.PI;
+  yaw=actor().rotation.y??Math.PI;
  };
  api.resetRover=()=>{getRover().position.set(defaults.rover[0],0,defaults.rover[1]);api.objects.rover.door.set(defaults.rover[0],0,defaults.rover[1]+2.8);};
  api.perform=(id,seconds,cb)=>{api.closeTerminal();api.stop();api.working={id,seconds,remaining:seconds,cb};workClock=0;api.crew[api.active].userData.arms[1].add(handTool);handTool.position.set(0,-.6,0);handTool.visible=true;};

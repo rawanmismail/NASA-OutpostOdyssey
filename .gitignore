@@ -5,3 +5,6 @@ qa/
 *.log
 *.[mM][dD]
 !/README.md
+
+.env*
+!.env.example

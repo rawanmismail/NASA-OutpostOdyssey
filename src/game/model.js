@@ -1,4 +1,7 @@
 import LANG from './translations.js';
+import {fetchGameFlare} from './nasaClient.js';
+import {normalizeFlareRecord} from './nasa.js';
+import {readSavedMission} from './savedMission.js';
 let LG='en';
 try { LG=localStorage.getItem('odyssey_react_lang')||'en'; } catch {}
 if(!LANG[LG]) LG='en';
@@ -14,11 +17,11 @@ const tx=t,lz=(p,v)=>()=>t(p,v),val=x=>typeof x==='function'?x():x;
 const joinList=a=>(LANG[LG].list||LANG.en.list)(a);
 const resName=k=>t('res.'+k);
 const realData=text=>text,gameEst=text=>text;
-const NASA_API_KEY= 'gqhJfMJTwLp6nCcjqtHqKWMF79mrzNFfwR9WKnQD';
 export const MAPS={elev:'assets/elevation-map.jpg',slope:'assets/slope-map.jpg'};
 function updateHUD() {}
 const TERM_KEYS=['regolith','radiation','flare','psr','slope','elevation','scrubber','lola','donki','rim'];
 const REF = {
+  radlab: ['NASA OSDR RadLab: ISS radiation measurements', 'https://visualization.osdr.nasa.gov/radlab/gui/data-api/'],
   shadow: ['NASA: Shadows near the Moon\'s south pole', 'https://science.nasa.gov/resource/shadows-near-the-moons-south-pole/'],
   shack: ['NASA: Shackleton crater, lit rim and shadowed interior', 'https://science.nasa.gov/resource/shackleton-craters-illuminated-rim-shadowed-interior/'],
   weather: ['NASA: Weather on the Moon', 'https://science.nasa.gov/moon/weather-on-the-moon/'],
@@ -32,7 +35,6 @@ const REF = {
   spaceapps: ['NASA Space Apps 2026: Space Agency Partners', 'https://www.spaceappschallenge.org/2026/space-agency-partners/'],
   ispace: ['ispace: HAKUTO-R Mission 1', 'https://www.ispace-inc.com/mission-1/'],
   lroImpact: ['NASA: LRO views the HAKUTO-R Mission 1 impact site', 'https://www.nasa.gov/centers-and-facilities/goddard/nasas-lro-views-impact-site-of-hakuto-r-mission-1-moon-lander/'],
-  radlab: ['NASA OSDR RadLab: ISS radiation dose measurements (DOSTEL, Columbus, April 2022)', 'https://visualization.osdr.nasa.gov/radlab/gui/data-api/'],
 };
 /* ============ game data (numbers only; text is in lang/) ============ */
 const SITES = {
@@ -93,10 +95,8 @@ const ARCHIVE = [
   { cls: 'X9.0', date: '2024-10-03', ar: '3842', li: 0 },
   { cls: 'X8.7', date: '2024-05-14', ar: '3664', li: 1 },
 ];
-const letterRank = { A: 0, B: 1, C: 2, M: 3, X: 4 };
-const rankCls = c => (letterRank[c[0]] ?? 0) * 100 + (parseFloat(c.slice(1)) || 0);
 const flareSev = c => c[0] === 'X' ? (parseFloat(c.slice(1)) >= 5 ? 4 : 3) : c[0] === 'M' ? 2 : 1;
-// The live DONKI result is reused for 6 hours (memory + localStorage), so replays don't call NASA again and the DEMO_KEY rate limit lasts.
+// Reuse live data in memory and restore browser-stored results for up to 6 hours.
 const FLARE_TTL = 6 * 3600e3;
 let flareCache = null;
 const pickArchive = () => { const a = ARCHIVE[Math.floor(Math.random() * ARCHIVE.length)]; return { ...a, live: false, sev: flareSev(a.cls) }; };
@@ -104,27 +104,14 @@ async function loadFlare() {
   const g = S; // the game this flare is for
   g.flare = pickArchive(); // ready straight away; replaced by live data if it arrives before the radiation event
   let f = flareCache;
-  if (!f) { try { const c = JSON.parse(localStorage.getItem('oo_flare') || 'null'); if (c && c.f && Date.now() - c.t < FLARE_TTL) f = c.f; } catch (e) { } }
+  if (!f) { try { const c = JSON.parse(localStorage.getItem('oo_flare') || 'null'),age=Date.now()-c?.t; if (Number.isFinite(c?.t) && age>=0 && age<FLARE_TTL) f=normalizeFlareRecord(c.f); } catch {} }
   if (!f) f = await fetchFlare();
   if (!f) return;
   flareCache = f;
   if (!g.flareUsed) g.flare = { ...f, sev: flareSev(f.cls) };
 }
 async function fetchFlare() {
-  let f = null;
-  try {
-    const iso = d => d.toISOString().slice(0, 10);
-    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 5000);
-    const r = await fetch(`https://api.nasa.gov/DONKI/FLR?startDate=${iso(new Date(Date.now() - 150 * 864e5))}&endDate=${iso(new Date())}&api_key=${encodeURIComponent(NASA_API_KEY)}`, { signal: ctl.signal });
-    clearTimeout(to);
-    if (r.ok) {
-      const j = await r.json();
-      if (Array.isArray(j) && j.length) {
-        const top = j.filter(x => x.classType).sort((a, b) => rankCls(b.classType) - rankCls(a.classType))[0];
-        if (top) f = { cls: top.classType, date: (top.peakTime || top.beginTime || '').slice(0, 10), ar: top.activeRegionNum || '—', live: true, link: top.link };
-      }
-    }
-  } catch (e) { /* offline or blocked: the archived record is used */ }
+  const f = await fetchGameFlare();
   if (f) { try { localStorage.setItem('oo_flare', JSON.stringify({ t: Date.now(), f })); } catch (e) { } }
   return f;
 }
@@ -162,7 +149,7 @@ const EV = {
         { fx: { prot: -dose, sci: 2, power: -4 }, risk: { p: f.sev >= 3 ? .5 : .25, fx: { prot: -8 } } },
         { fx: { prot: -Math.round(dose * .5), power: -14 }, flag: { shieldBonus: true } },
       ],
-      src: 'other',    refs: [REF.change4, REF.radlab],
+      src: 'other', refs: [REF.change4, REF.radlab],
     });
   },
   dust: ctx => mkEvent('dust', {
@@ -233,7 +220,7 @@ const ROUTES = [{id:'edge',base:10,ch:.35,cold:0,stuck:0},{id:'mid',base:16,ch:.
 const OFF = {labs:{power:6,sci:-1},rover:{power:4,prot:-2},green:{power:5,life:-4},heat:{power:8,prot:-5}};
 const Mission = {
   start(){
-    if(!S.site || cost(S.build)>BUDGET || !S.place.hab || !S.place.pow || S.place.hab===S.place.pow) return false;
+    if(!Object.hasOwn(SITES,S.site) || !['hab','pow','life','shelter'].every(k=>[1,2,3].includes(S.build[k])) || cost(S.build)>BUDGET || ![S.place.hab,S.place.pow].every(spot=>SITES[S.site].spots.includes(spot)) || S.place.hab===S.place.pow) return false;
     startMeters(); S.turn=0; S.sci=0; S.health=4; S.log=[]; S.facts=[]; S.ice=null;
     S.flags={panelBoost:0,shieldBonus:false}; S.selected=0; S.elapsed=0; S.clock=480;
     S.phase='brief'; S.position=[0,9]; S.dayJob=null; S.visited=[]; planEvents(); this.beginDay(); return true;
@@ -331,7 +318,7 @@ const Mission = {
     try{localStorage.setItem('odyssey_react_save',JSON.stringify({version:1,state:S},(k,v)=>k==='cur'||k==='facts'?undefined:v));}catch(e){}
   },
   restore(){
-    try{const v=JSON.parse(localStorage.getItem('odyssey_react_save'));if(v?.version!==1||!SITES[v.state.site]||!Array.isArray(v.state.events)||!v.state.events.every(x=>EV[x])||!Number.isInteger(v.state.turn)||v.state.turn<0||v.state.turn>5)return false;S=v.state;S.cur=null;S.facts=[];return true;}catch(e){return false;}
+    const state=readSavedMission();if(!state)return false;S=state;S.cur=null;S.facts=[];if(S.flare)S.flare={...S.flare,sev:flareSev(S.flare.cls)};return true;
   }
 };
 
@@ -347,7 +334,7 @@ export const model={
  async newMission({weather=true}={}){newGame();S.site='ridge';S.build.rover=true;S.m={life:70,power:60,prot:60};S.phase='training';S.selected=0;changed();if(weather){await loadFlare();changed();}},
  save(spatial){if(spatial)S.spatial=spatial;Mission.save();},
  restore(){const ok=Mission.restore();if(ok)changed();return ok;},
- hasSave(){try{return !!JSON.parse(localStorage.getItem('odyssey_react_save'))?.state?.site;}catch{return false;}},
+ hasSave(){return !!readSavedMission();},
  forecast,cost,applyFx,startMeters,
 };
 if(import.meta.hot){

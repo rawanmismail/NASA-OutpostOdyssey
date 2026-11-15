@@ -18,3 +18,13 @@ test('production server serves compressed game assets, health checks and safe er
   assert.equal((await fetch(url+'/%invalid')).status,400);assert.equal((await fetch(url,{method:'POST'})).status,405);
  }finally{await new Promise(resolve=>server.close(resolve));await rm(join(root,'index.html'));await rm(join(root,'game-abcdefgh.js'));await rmdir(root);}
 });
+
+test('NASA endpoint returns public data with CORS for Netlify and never serves env files',async()=>{
+ const server=createGameServer(undefined,{nasaFlare:async()=>({cls:'X3.2',date:'2026-11-10',ar:4321,live:true})});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url=`http://127.0.0.1:${server.address().port}`;
+ try{
+  const response=await fetch(url+'/api/nasa/flare');assert.equal(response.status,200);assert.equal(response.headers.get('access-control-allow-origin'),'*');assert.equal((await response.json()).record.cls,'X3.2');assert.match(response.headers.get('cache-control'),/max-age=300/);
+  assert.equal((await fetch(url+'/.env.local')).status,404);
+  const head=await fetch(url+'/api/nasa/flare',{method:'HEAD'});assert.equal(head.status,200);assert.equal(await head.text(),'');
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});

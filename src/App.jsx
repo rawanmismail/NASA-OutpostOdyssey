@@ -1,6 +1,7 @@
 import React,{useCallback,useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {model,t,Mission,EVENT_AT,JOBS,CREW} from './game/model.js';
 import {r} from './game/copy.js';
+import {normalizeSettings} from './game/settings.js';
 import {objective} from './game/objectives.js';
 import {createWorld} from './world/createWorld.js';
 import {AudioBus} from './audio/AudioBus.js';
@@ -9,7 +10,7 @@ import {Terminal} from './components/Terminal.jsx';
 import {Button,Icon} from './components/UI.jsx';
 import {stationName} from './components/Panels.jsx';
 
-const initialSettings=()=>{const base={master:.65,music:.3,ambience:.5,effects:.65,voice:.85,narration:true,quality:matchMedia('(pointer: coarse)').matches?'low':'high',motion:matchMedia('(prefers-reduced-motion: reduce)').matches};try{return {...base,...JSON.parse(localStorage.getItem('odyssey_react_settings')||'{}')};}catch{return base;}};
+const initialSettings=()=>{const base={master:.65,music:.3,ambience:.5,effects:.65,voice:.85,narration:true,quality:matchMedia('(pointer: coarse)').matches?'low':'high',motion:matchMedia('(prefers-reduced-motion: reduce)').matches};try{return normalizeSettings(JSON.parse(localStorage.getItem('odyssey_react_settings')||'{}'),base);}catch{return base;}};
 export default function App(){
  const revision=useSyncExternalStore(model.subscribe,model.getSnapshot),s=model.state;
  const mount=useRef(null),worldRef=useRef(null),handlers=useRef({}),frameRef=useRef({}),terminalRef=useRef(null),screenRef=useRef('menu'),busy=useRef(false),lastMaster=useRef(.65),audioRef=useRef(null);
