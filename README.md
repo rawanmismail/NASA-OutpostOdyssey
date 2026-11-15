@@ -170,5 +170,5 @@ Our project explores how interactive technology can make lunar science and the c
 
 ---
 
-*One Moon. One crew. One mission. Your decisions determine what happens next.* 🌕    
+*One Moon. One crew. One mission. Your decisions determine what happens next.* 🌕     
  
