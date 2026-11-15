@@ -6,11 +6,11 @@ const LANG = {};
 
 LANG.en = {
   dir: 'ltr',
-  title: 'dune tech',
+  title: 'Outpost Odyssey',
   langBtn: 'العربية', langBtnLang: 'ar', langBtnLabel: 'Switch to Arabic',
   list: a => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]),
 
-  ui: { brand: 'dune tech', credits: 'NASA science credits', mainMenu: 'Main menu', close: 'Close', tapClose: 'Tap anywhere to close.', notEnoughPower: 'Not enough power', outOf: '{n} out of {of}', comma: ', ' },
+  ui: { brand: 'Outpost Odyssey', credits: 'NASA science credits', mainMenu: 'Main menu', close: 'Close', tapClose: 'Tap anywhere to close.', notEnoughPower: 'Not enough power', outOf: '{n} out of {of}', comma: ', ' },
   res: { life: 'Life Support', power: 'Power', prot: 'Crew Protection', sci: 'Science' },
   live: { change: '{res} {dir} {n}, now {now}.', up: 'up', down: 'down', danger: 'Danger zone!' },
   tag: { real: 'Real NASA data', est: 'Game estimate', source: 'Source:', srcNasa: 'Real NASA science', srcOther: 'Real science', live: 'Live from NASA DONKI', archived: 'Real NASA DONKI record · archived', simInstrument: 'Simulated instrument', simulated: 'Simulated' },
@@ -348,11 +348,11 @@ crewScienceSource: "Source: NASA Open Science Data Repository (OSDR)",
 
 LANG.ar = {
   dir: 'rtl',
-  title: 'dune tech',
+  title: 'Outpost Odyssey',
   langBtn: 'English', langBtnLang: 'en', langBtnLabel: 'التبديل إلى الإنجليزية',
   list: a => (a.length < 2 ? a.join('') : a.slice(0, -1).join('، ') + ' و' + a[a.length - 1]),
 
-  ui: { brand: 'dune tech', credits: 'مصادر علوم ناسا', mainMenu: 'القائمة الرئيسية', close: 'إغلاق', tapClose: 'اضغط في أي مكان للإغلاق.', notEnoughPower: 'الطاقة لا تكفي', outOf: '{n} من {of}', comma: '، ' },
+  ui: { brand: 'Outpost Odyssey', credits: 'مصادر علوم ناسا', mainMenu: 'القائمة الرئيسية', close: 'إغلاق', tapClose: 'اضغط في أي مكان للإغلاق.', notEnoughPower: 'الطاقة لا تكفي', outOf: '{n} من {of}', comma: '، ' },
   res: { life: 'دعم الحياة', power: 'الطاقة', prot: 'حماية الطاقم', sci: 'العلوم' },
   live: { change: '{res}: {dir} {n}، والقيمة الآن {now}.', up: 'زيادة', down: 'نقص', danger: 'منطقة الخطر!' },
   tag: { real: 'بيانات حقيقية من ناسا', est: 'تقدير اللعبة', source: 'المصدر (بالإنجليزية):', srcNasa: 'علم حقيقي من ناسا', srcOther: 'علم حقيقي', live: 'مباشر من DONKI التابع لناسا', archived: 'سجل حقيقي من DONKI التابع لناسا · مؤرشف', simInstrument: 'جهاز افتراضي', simulated: 'محاكاة' },
