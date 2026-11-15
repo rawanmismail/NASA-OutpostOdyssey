@@ -14,7 +14,7 @@ const tx=t,lz=(p,v)=>()=>t(p,v),val=x=>typeof x==='function'?x():x;
 const joinList=a=>(LANG[LG].list||LANG.en.list)(a);
 const resName=k=>t('res.'+k);
 const realData=text=>text,gameEst=text=>text;
-const NASA_API_KEY='DEMO_KEY';
+const NASA_API_KEY= 'gqhJfMJTwLp6nCcjqtHqKWMF79mrzNFfwR9WKnQD';
 export const MAPS={elev:'assets/elevation-map.jpg',slope:'assets/slope-map.jpg'};
 function updateHUD() {}
 const TERM_KEYS=['regolith','radiation','flare','psr','slope','elevation','scrubber','lola','donki','rim'];
