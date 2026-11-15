@@ -1,4 +1,10 @@
 const DEMO_KEY='DEMO_KEY';
+// Verified with NASA CCMC /DONKI/WS/get/FLR on 15 November 2026.
+// Keep the full activeRegionNum returned by DONKI rather than its short form.
+export const ARCHIVE_FLARES=[
+ {cls:'X9.0',date:'2024-10-03',ar:13842,li:0},
+ {cls:'X8.7',date:'2024-05-14',ar:13664,li:1},
+];
 // Both network responses and browser storage cross this same data boundary.
 export function normalizeFlareRecord(record){
  if(!record || record.live!==true || typeof record.cls!=='string' || !/^[ABCMX]\d+(?:\.\d+)?$/.test(record.cls) || !Number.isFinite(Number(record.cls.slice(1))))return null;

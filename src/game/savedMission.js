@@ -1,4 +1,4 @@
-import {normalizeFlareRecord} from './nasa.js';
+import {normalizeFlareRecord,ARCHIVE_FLARES} from './nasa.js';
 
 const sites={ridge:['high','edge'],shackleton:['high','low','edge'],gerlache:['high','low','edge']};
 const events=['power','rad','dust','micro','freeze','ice','life'];
@@ -37,8 +37,9 @@ export function validateSavedMission(value){
  if(s.flare!=null){
   if(s.flare.live===true){const flare=normalizeFlareRecord(s.flare);if(!flare)return null;s.flare=flare;}
   else {
-   if(!object(s.flare)||!['X9.0','X8.7'].includes(s.flare.cls)||s.flare.live!==false)return null;
-   s.flare=s.flare.cls==='X9.0'?{cls:'X9.0',date:'2024-10-03',ar:'3842',li:0,live:false}:{cls:'X8.7',date:'2024-05-14',ar:'3664',li:1,live:false};
+   const archived=ARCHIVE_FLARES.find(f=>f.cls===s.flare.cls);
+   if(!object(s.flare)||!archived||s.flare.live!==false)return null;
+   s.flare={...archived,live:false};
   }
  }
  if(s.visited!==undefined&&(!Array.isArray(s.visited)||!s.visited.every(id=>['hab','pow','life','shelter','lab','rover','green','survey'].includes(id))))return null;

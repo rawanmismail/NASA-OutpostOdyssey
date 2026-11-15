@@ -1,6 +1,6 @@
 import LANG from './translations.js';
 import {fetchGameFlare} from './nasaClient.js';
-import {normalizeFlareRecord} from './nasa.js';
+import {normalizeFlareRecord,ARCHIVE_FLARES} from './nasa.js';
 import {readSavedMission} from './savedMission.js';
 let LG='en';
 try { LG=localStorage.getItem('odyssey_react_lang')||'en'; } catch {}
@@ -89,12 +89,8 @@ function startMeters() {
 }
 
 /* ============ real data: NASA DONKI ============ */
-// TODO before submitting: double-check BOTH records (class, date, active region) on NASA DONKI: https://kauai.ccmc.gsfc.nasa.gov/DONKI/search/
 // li = which label in flare.archive (lang/) describes the record.
-const ARCHIVE = [
-  { cls: 'X9.0', date: '2024-10-03', ar: '3842', li: 0 },
-  { cls: 'X8.7', date: '2024-05-14', ar: '3664', li: 1 },
-];
+const ARCHIVE = ARCHIVE_FLARES;
 const flareSev = c => c[0] === 'X' ? (parseFloat(c.slice(1)) >= 5 ? 4 : 3) : c[0] === 'M' ? 2 : 1;
 // Reuse live data in memory and restore browser-stored results for up to 6 hours.
 const FLARE_TTL = 6 * 3600e3;
