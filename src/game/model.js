@@ -32,6 +32,7 @@ const REF = {
   spaceapps: ['NASA Space Apps 2026: Space Agency Partners', 'https://www.spaceappschallenge.org/2026/space-agency-partners/'],
   ispace: ['ispace: HAKUTO-R Mission 1', 'https://www.ispace-inc.com/mission-1/'],
   lroImpact: ['NASA: LRO views the HAKUTO-R Mission 1 impact site', 'https://www.nasa.gov/centers-and-facilities/goddard/nasas-lro-views-impact-site-of-hakuto-r-mission-1-moon-lander/'],
+  radlab: ['NASA OSDR RadLab: ISS radiation dose measurements (DOSTEL, Columbus, April 2022)', 'https://visualization.osdr.nasa.gov/radlab/gui/data-api/'],
 };
 /* ============ game data (numbers only; text is in lang/) ============ */
 const SITES = {
@@ -161,7 +162,7 @@ const EV = {
         { fx: { prot: -dose, sci: 2, power: -4 }, risk: { p: f.sev >= 3 ? .5 : .25, fx: { prot: -8 } } },
         { fx: { prot: -Math.round(dose * .5), power: -14 }, flag: { shieldBonus: true } },
       ],
-      src: 'other', refs: [REF.change4],
+      src: 'other',    refs: [REF.change4, REF.radlab],
     });
   },
   dust: ctx => mkEvent('dust', {

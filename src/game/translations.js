@@ -233,7 +233,7 @@ LANG.en = {
         { t: 'Switch off labs, rover and lights', d: 'Only keep the essentials running.', why: 'When things go wrong, astronauts turn off optional activities first. You lost some science but kept power for what matters most.' },
         { t: 'Use the emergency air-cleaning canisters', d: 'Old trick, tiring work.', why: 'On Apollo 13 the crew improvised with spare canisters to clean their air. It works with almost no power, but the crew is tired and stressed, so protection drops.' },
       ],
-      fact: { title: 'How much do astronauts need?', text: 'Each astronaut uses about 0.89 kg of oxygen and drinks about 2.79 kg of water a day, and eats about 1.8 kg of food. For 4 crew over 7 days that is roughly 25 kg of oxygen, 78 kg of water and 50 kg of food.' },
+      fact: { title: 'How much do astronauts need?', text: 'Each astronaut uses about 0.89 kg of oxygen and drinks about 2.79 kg of water a day, and eats about 1.8 kg of food.    For 4 crew over 5 days that is roughly 18 kg of oxygen, 56 kg of water and 36 kg of food.' },
     },
   },
   rashid: {
@@ -575,7 +575,7 @@ LANG.ar = {
         { t: 'أطفئ المختبرات والمركبة والأضواء', d: 'أبقِ الأساسيات فقط تعمل.', why: 'عندما تسوء الأمور، يطفئ رواد الفضاء الأنشطة غير الضرورية أولًا. خسرت بعض العلوم لكنك حفظت الطاقة لما هو أهم.' },
         { t: 'استخدم عبوات تنقية الهواء للطوارئ', d: 'حيلة قديمة، وعمل متعب.', why: 'في مهمة أبولو 13 ارتجل الطاقم حلًا بعبوات احتياطية لتنقية هوائهم. هذا الحل لا يحتاج تقريبًا إلى طاقة، لكن الطاقم متعب ومتوتر، فتنخفض الحماية.' },
       ],
-      fact: { title: 'كم يحتاج رواد الفضاء؟', text: 'يستهلك كل رائد فضاء يوميًا نحو 0.89 كغ من الأكسجين، ويشرب نحو 2.79 كغ من الماء، ويأكل نحو 1.8 كغ من الطعام. لطاقم من 4 أفراد مدة 7 أيام، هذا يعني تقريبًا 25 كغ من الأكسجين و78 كغ من الماء و50 كغ من الطعام.' },
+      fact: { title: 'كم يحتاج رواد الفضاء؟', text: 'يستهلك كل رائد فضاء يوميًا نحو 0.89 كغ من الأكسجين، ويشرب نحو 2.79 كغ من الماء، ويأكل نحو 1.8 كغ من الطعام. لطاقم من 4 أفراد مدة 5 أيام، هذا يعني تقريبًا 18 كغ من الأكسجين و56 كغ من الماء و36 كغ من الطعام.' },
     },
   },
   rashid: {
@@ -687,8 +687,8 @@ LANG.ar.x={
 // Correct historical/engineering statements that the supplied research simplifies.
 LANG.en.ev.rad.story='A solar eruption has triggered a simulated safety alert. Go to the shelter before the mission continues. The 30-minute warning in this scenario is a game estimate; real warning times vary.';
 LANG.ar.ev.rad.story='تسبب ثوران شمسي في إنذار سلامة محاكاة. اذهب إلى الملجأ قبل متابعة المهمة. مهلة الثلاثين دقيقة تقدير للعبة؛ تختلف الإنذارات الحقيقية.';
-LANG.en.ev.rad.fact.text='The Moon has almost no atmosphere and no global magnetic field. Chang’e-4 measured about 1,369 µSv per day at its landing site (Zhang et al., 2020). This is a site measurement, not a constant dose everywhere. Shielding needs depend on the material, particle energy and shelter design. The supplied research discusses about 0.75 m of soil as an example, not a universal safety thickness.';
-LANG.ar.ev.rad.fact.text='للقمر غلاف جوي ضئيل جداً ولا يملك مجالاً مغناطيسياً عالمياً. قاست مركبة تشانغ آه 4 نحو 1369 ميكروسيفرت يومياً في موقع هبوطها (تشانغ وآخرون، 2020). ليست جرعة ثابتة في كل مكان. تعتمد الحماية على المادة وطاقة الجسيمات وتصميم الملجأ. يذكر البحث 0.75 متر من التربة كمثال لا كسماكة أمان عامة.';
+LANG.en.ev.rad.fact.text='The Moon has almost no atmosphere and no global magnetic field. Chang’e-4 measured about 1,369 µSv per day at its landing site (Zhang et al., 2020). This is a site measurement, not a constant dose everywhere. Shielding needs depend on the material, particle energy and shelter design. The supplied research discusses about 0.75 m of soil as an example, not a universal safety thickness. On the International Space Station, NASA\'s RadLab data shows about 140 µGy a day (DOSTEL detectors in the Columbus module, a 2-hour sample from April 2022).';
+LANG.ar.ev.rad.fact.text='للقمر غلاف جوي ضئيل جداً ولا يملك مجالاً مغناطيسياً عالمياً. قاست مركبة تشانغ آه 4 نحو 1369 ميكروسيفرت يومياً في موقع هبوطها (تشانغ وآخرون، 2020). ليست جرعة ثابتة في كل مكان. تعتمد الحماية على المادة وطاقة الجسيمات وتصميم الملجأ. يذكر البحث 0.75 متر من التربة كمثال لا كسماكة أمان عامة. وعلى متن محطة الفضاء الدولية، تُظهر بيانات RadLab التابعة لناسا نحو 140 ميكروغراي يومياً (كاشفات DOSTEL في وحدة كولومبوس، عينة مدتها ساعتان في أبريل 2022).';
 LANG.en.ev.rad.choices[2].why='Adding Moon soil improves shielding in this game. It costs power and exposes the crew while they work. Real shelters need a detailed engineering design; a single soil thickness does not guarantee safety.';
 LANG.ar.ev.rad.choices[2].why='تزيد تربة القمر الحماية في اللعبة. يتطلب العمل طاقة ويعرض الطاقم للإشعاع. تحتاج الملاجئ الحقيقية إلى تصميم هندسي مفصل ولا تضمن سماكة واحدة الأمان.';
 LANG.en.flare.archive[0]='Historical October 2024 flare';LANG.ar.flare.archive[0]='توهج تاريخي في أكتوبر 2024';
