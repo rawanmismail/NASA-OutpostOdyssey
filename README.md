@@ -168,7 +168,7 @@ Created for the **NASA Space Apps Challenge 2026**.
 
 Our project explores how interactive technology can make lunar science and the challenges of future space exploration more accessible.
 
----
+---  
 
 *One Moon. One crew. One mission. Your decisions determine what happens next.* 🌕     
  
