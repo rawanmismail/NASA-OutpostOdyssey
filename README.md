@@ -7,6 +7,7 @@
 **Explore the Moon. Build your outpost. Keep your crew alive.**
 
 🌐 **https://outpostodysseygame.netlify.app**
+or, you can access it here: 🌐 **https://outpost-odyssey.up.railway.app/**
 
 
 ---
@@ -27,7 +28,8 @@ There are two ways to experience Outpost Odyssey.
 
 The easiest way to get started. No downloads, installation or setup required.
 
-**🌐 Launch Outpost Odyssey** : **https://outpostodysseygame.netlify.app**
+**🌐 Launch Outpost Odyssey** : **https://outpostodysseygame.netlify.app** 
+we have also deployed it here: **https://outpost-odyssey.up.railway.app/**, incase if there is traffic on one website, users can still enjoy the game!
 
 Open the link in your browser and begin your mission.
 
